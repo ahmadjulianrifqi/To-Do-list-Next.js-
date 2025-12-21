@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import TodoItem from "./components/TodoItem";
 
 interface Todo {
   id: number;
@@ -19,32 +20,44 @@ export default function Home() {
   const [filter, setFilter] = useState("all");
   const [sort, setSort] = useState("newest");
 
-  // waktu sekarang (aman dipakai di render)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [now] = useState(() => Date.now());
 
   // =========================
-  // FETCH TODOS (SATU-SATUNYA)
+  // FETCH TODOS
   // =========================
   useEffect(() => {
     const fetchTodos = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const res = await fetch(`/api/todos?filter=${filter}&sort=${sort}`);
+
+        if (!res.ok) {
+          throw new Error("Fetch failed");
+        }
+
         const data = await res.json();
         setTodos(data);
-      } catch (err) {
-        console.error("Fetch error:", err);
+      } catch {
+        setError("Tidak bisa memuat todo. Coba refresh.");
         setTodos([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchTodos();
   }, [filter, sort]);
 
+  const refresh = () => setFilter((f) => f);
+
   // =========================
   // ACTIONS
   // =========================
-  const refresh = () => setFilter((f) => f);
-
   const addTodo = async () => {
     if (!input.trim()) return;
 
@@ -59,14 +72,35 @@ export default function Home() {
     refresh();
   };
 
-  const toggleTodo = async (todo: Todo) => {
-    await fetch("/api/todos", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: todo.id, completed: !todo.completed }),
-    });
+    const toggleTodo = async (todo: Todo) => {
+    // 1️⃣ SIMPAN STATE LAMA (untuk rollback)
+    const previousTodos = todos;
 
-    refresh();
+    // 2️⃣ UPDATE UI LANGSUNG
+    setTodos((prev) =>
+      prev.map((t) =>
+        t.id === todo.id
+          ? { ...t, completed: !t.completed }
+          : t
+      )
+    );
+
+    // 3️⃣ PANGGIL API
+    try {
+      const res = await fetch("/api/todos", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: todo.id,
+          completed: !todo.completed,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed");
+    } catch {
+      // 4️⃣ ROLLBACK KALAU GAGAL
+      setTodos(previousTodos);
+    }
   };
 
   const deleteTodo = async (id: number) => {
@@ -75,11 +109,10 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
-
     refresh();
   };
 
-  const handleEditSave = async (todo: Todo) => {
+  const saveEdit = async (todo: Todo) => {
     if (!editingTitle.trim()) return;
 
     await fetch("/api/todos", {
@@ -133,28 +166,20 @@ export default function Home() {
 
       {/* Add Todo */}
       <div className="flex gap-2 mb-5">
-        <label htmlFor="title" className="sr-only">
-          Judul Todo
-        </label>
         <input
-          id="title"
+          aria-label="Judul Todo"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Tambah todo..."
           className="flex-1 border px-3 py-2 rounded"
         />
-
-        <label htmlFor="deadline" className="sr-only">
-          Deadline Todo
-        </label>
         <input
-          id="deadline"
+          aria-label="Deadline Todo"
           type="datetime-local"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
           className="border px-3 py-2 rounded"
         />
-
         <button
           onClick={addTodo}
           className="bg-blue-500 text-white px-4 rounded"
@@ -163,84 +188,56 @@ export default function Home() {
         </button>
       </div>
 
+      {/* STATES */}
+      {loading && (
+        <div className="text-center text-gray-500 py-10">
+          Memuat todo...
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center text-red-500 py-10">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && todos.length === 0 && (
+        <div className="text-center text-gray-400 py-10">
+          Belum ada todo. Yuk tambahin ✨
+        </div>
+      )}
+
       {/* Todo List */}
       <div className="space-y-3">
-        {todos.map((todo) => {
-          const isNearDeadline =
-            todo.deadline &&
-            new Date(todo.deadline).getTime() - now < 24 * 60 * 60 * 1000;
+        {!loading &&
+          !error &&
+          todos.map((todo) => {
+            const isNearDeadline =
+              todo.deadline &&
+              new Date(todo.deadline).getTime() - now <
+                24 * 60 * 60 * 1000;
 
-          return (
-            <div
-              key={todo.id}
-              className="p-3 border rounded bg-gray-50 flex justify-between"
-            >
-              <div className="flex gap-2">
-                <input
-                  type="checkbox"
-                  aria-label={`Toggle ${todo.title}`}
-                  checked={todo.completed}
-                  onChange={() => toggleTodo(todo)}
-                />
-
-                {editingId === todo.id ? (
-                  <>
-                    <input
-                      aria-label="Edit judul todo"
-                      value={editingTitle}
-                      onChange={(e) => setEditingTitle(e.target.value)}
-                      className="border px-2 rounded"
-                    />
-
-                    <input
-                      aria-label="Edit deadline todo"
-                      type="datetime-local"
-                      value={editingDeadline || ""}
-                      onChange={(e) => setEditingDeadline(e.target.value)}
-                      className="border px-2 rounded"
-                    />
-                  </>
-                ) : (
-                  <div>
-                    <div
-                      className={
-                        todo.completed ? "line-through text-gray-500" : ""
-                      }
-                    >
-                      {todo.title}
-                    </div>
-                    <div
-                      className={`text-sm ${
-                        isNearDeadline ? "text-red-500" : "text-gray-600"
-                      }`}
-                    >
-                      {todo.deadline
-                        ? new Date(todo.deadline).toLocaleString()
-                        : "-"}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-2">
-                {editingId === todo.id ? (
-                  <button onClick={() => handleEditSave(todo)}>Save</button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setEditingId(todo.id);
-                      setEditingTitle(todo.title);
-                      setEditingDeadline(todo.deadline);
-                    }}
-                  >
-                    Edit
-                  </button>
-                )}
-                <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-              </div>
-            </div>
-          );
-        })}
+            return (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                isNearDeadline={!!isNearDeadline}
+                isEditing={editingId === todo.id}
+                editingTitle={editingTitle}
+                editingDeadline={editingDeadline}
+                onToggle={() => toggleTodo(todo)}
+                onEditStart={() => {
+                  setEditingId(todo.id);
+                  setEditingTitle(todo.title);
+                  setEditingDeadline(todo.deadline);
+                }}
+                onEditChangeTitle={setEditingTitle}
+                onEditChangeDeadline={setEditingDeadline}
+                onEditSave={() => saveEdit(todo)}
+                onDelete={() => deleteTodo(todo.id)}
+              />
+            );
+          })}
       </div>
     </main>
   );
