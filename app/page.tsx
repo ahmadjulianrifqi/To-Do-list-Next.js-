@@ -135,8 +135,8 @@ export default function Home() {
   // UI
   // =========================
   return (
-    <main className="p-10 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-5">To-Do List</h1>
+    <main className="p-10 max-w-xl mx-auto ">
+      <h1 className="text-3xl font-bold mb-5 ">To-Do List</h1>
 
       {/* Filter & Sort */}
       <div className="flex gap-3 mb-5 items-center">
@@ -159,8 +159,8 @@ export default function Home() {
           onChange={(e) => setSort(e.target.value)}
           className="border px-2 py-1 rounded"
         >
-          <option value="newest">Terbaru</option>
-          <option value="deadline">Deadline</option>
+          <option className="text-black" value="newest">Terbaru</option>
+          <option className="text-black" value="deadline">Deadline</option>
         </select>
       </div>
 
@@ -171,14 +171,14 @@ export default function Home() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Tambah todo..."
-          className="flex-1 border px-3 py-2 rounded"
+          className="flex-1 border px-3 py-2 rounded bg-amber-50 text-black"
         />
-        <input
+        <input 
           aria-label="Deadline Todo"
           type="datetime-local"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
-          className="border px-3 py-2 rounded"
+          className="border px-3 py-2 rounded bg-amber-50 text-black "
         />
         <button
           onClick={addTodo}

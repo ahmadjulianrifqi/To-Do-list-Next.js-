@@ -37,7 +37,7 @@ export default function TodoItem({
   onDelete,
 }: TodoItemProps) {
   return (
-    <div className="p-3 border rounded bg-gray-50 flex justify-between">
+    <div className="p-3 border rounded bg-blue-500 flex justify-between ">
       <div className="flex gap-2">
         <input
           type="checkbox"
@@ -80,14 +80,14 @@ export default function TodoItem({
           </div>
         )}
       </div>
-
-      <div className="flex gap-2">
+  
+      <div className="flex gap-2 ">
         {isEditing ? (
-          <button onClick={onEditSave}>Save</button>
+          <button className="bg-blue-500 rounded px-2.5 " onClick={onEditSave}>Save</button>
         ) : (
           <button onClick={onEditStart}>Edit</button>
         )}
-        <button onClick={onDelete}>Delete</button>
+        <button className="bg-blue-500" onClick={onDelete}>Delete</button>
       </div>
     </div>
   );
