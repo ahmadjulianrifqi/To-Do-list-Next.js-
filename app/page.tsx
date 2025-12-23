@@ -132,7 +132,7 @@ export default function Home() {
   };
 
   // =========================
-  // UI
+  // UI Sederhana
   // =========================
   return (
     <main className="p-4 sm:p-10 max-w-xl mx-auto ">
