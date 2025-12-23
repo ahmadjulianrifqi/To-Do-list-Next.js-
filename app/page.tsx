@@ -135,110 +135,116 @@ export default function Home() {
   // UI
   // =========================
   return (
-    <main className="p-10 max-w-xl mx-auto ">
-      <h1 className="text-3xl font-bold mb-5 ">To-Do List</h1>
+    <main className="p-4 sm:p-10 max-w-xl mx-auto ">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-5 text-center sm:text-left">To-Do List</h1>
 
       {/* Filter & Sort */}
-      <div className="flex gap-3 mb-5 items-center">
-        {["all", "active", "completed"].map((f) => (
-          <button
-            key={f}
-            className={filter === f ? "font-bold text-blue-600" : ""}
-            onClick={() => setFilter(f)}
-          >
-            {f}
-          </button>
-        ))}
+      <div className="flex gap-3 mb-5 items-center overflow-x-auto">
+        <div className="flex gap-2" >
+          {["all", "active", "completed"].map((f) => (
+            <button
+              key={f}
+              className={filter === f ? "font-bold text-blue-600" : ""}
+              onClick={() => setFilter(f)}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
 
-        <label htmlFor="sort" className="ml-auto text-sm">
-          Urutkan
-        </label>
-        <select
-          id="sort"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="border px-2 py-1 rounded"
-        >
+        <div className="ml-auto flex items-center gap-2">
+          <label htmlFor="sort" className="text-sm whitespace-nowrap ml-auto">
+            Urutkan
+          </label>
+          <select
+            id="sort"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
           <option className="text-black" value="newest">Terbaru</option>
           <option className="text-black" value="deadline">Deadline</option>
-        </select>
+          </select>
+        </div>
       </div>
 
-      {/* Add Todo */}
-      <div className="flex gap-2 mb-5">
-        <input
-          aria-label="Judul Todo"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Tambah todo..."
-          className="flex-1 border px-3 py-2 rounded bg-amber-50 text-black"
-        />
-        <input 
-          aria-label="Deadline Todo"
-          type="datetime-local"
-          value={deadline}
-          onChange={(e) => setDeadline(e.target.value)}
-          className="border px-3 py-2 rounded bg-amber-50 text-black "
-        />
-        <button
-          onClick={addTodo}
-          className="bg-blue-500 text-white px-4 rounded"
-        >
-          Add
-        </button>
-      </div>
+   {/* Add Todo */}
+  <div className="flex flex-col sm:flex-row gap-2 mb-5">
+    <input
+      aria-label="Judul Todo"
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      placeholder="Tambah todo..."
+      className="flex-1 border px-3 py-2 rounded bg-amber-50 text-black "
+    />
 
-      {/* STATES */}
-      {loading && (
-        <div className="text-center text-gray-500 py-10">
-          Memuat todo...
-        </div>
-      )}
+    <input
+      aria-label="Deadline Todo"
+      type="datetime-local"
+      value={deadline}
+      onChange={(e) => setDeadline(e.target.value)}
+      className="border px-3 py-2 rounded bg-amber-50 text-black"
+    />
 
-      {error && (
-        <div className="text-center text-red-500 py-10">
-          {error}
-        </div>
-      )}
+    <button
+      onClick={addTodo}
+      className="bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Add
+    </button>
+  </div>
 
-      {!loading && !error && todos.length === 0 && (
-        <div className="text-center text-gray-400 py-10">
-          Belum ada todo. Yuk tambahin ✨
-        </div>
-      )}
+  {/* STATES */}
+  {loading && (
+    <div className="text-center text-gray-500 py-10">
+      Memuat todo...
+    </div>
+  )}
 
-      {/* Todo List */}
-      <div className="space-y-3">
-        {!loading &&
-          !error &&
-          todos.map((todo) => {
-            const isNearDeadline =
-              todo.deadline &&
-              new Date(todo.deadline).getTime() - now <
-                24 * 60 * 60 * 1000;
+  {error && (
+    <div className="text-center text-red-500 py-10">
+      {error}
+    </div>
+  )}
 
-            return (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                isNearDeadline={!!isNearDeadline}
-                isEditing={editingId === todo.id}
-                editingTitle={editingTitle}
-                editingDeadline={editingDeadline}
-                onToggle={() => toggleTodo(todo)}
-                onEditStart={() => {
-                  setEditingId(todo.id);
-                  setEditingTitle(todo.title);
-                  setEditingDeadline(todo.deadline);
-                }}
-                onEditChangeTitle={setEditingTitle}
-                onEditChangeDeadline={setEditingDeadline}
-                onEditSave={() => saveEdit(todo)}
-                onDelete={() => deleteTodo(todo.id)}
-              />
-            );
-          })}
-      </div>
-    </main>
+  {!loading && !error && todos.length === 0 && (
+    <div className="text-center text-gray-400 py-10">
+      Belum ada todo. Yuk tambahin ✨
+    </div>
+  )}
+
+  {/* Todo List */}
+  <div className="space-y-3">
+    {!loading &&
+      !error &&
+      todos.map((todo) => {
+        const isNearDeadline =
+          todo.deadline &&
+          new Date(todo.deadline).getTime() - now <
+            24 * 60 * 60 * 1000;
+
+        return (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            isNearDeadline={!!isNearDeadline}
+            isEditing={editingId === todo.id}
+            editingTitle={editingTitle}
+            editingDeadline={editingDeadline}
+            onToggle={() => toggleTodo(todo)}
+            onEditStart={() => {
+              setEditingId(todo.id);
+              setEditingTitle(todo.title);
+              setEditingDeadline(todo.deadline);
+            }}
+            onEditChangeTitle={setEditingTitle}
+            onEditChangeDeadline={setEditingDeadline}
+            onEditSave={() => saveEdit(todo)}
+            onDelete={() => deleteTodo(todo.id)}
+          />
+        );
+      })}
+  </div>
+</main>
   );
 }
