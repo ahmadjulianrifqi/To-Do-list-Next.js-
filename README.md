@@ -37,24 +37,19 @@ Aplikasi To-Do List berbasis Next.js App Router yang memungkinkan pengguna menge
 🔔 Penanda deadline mendekati (warna merah)
 📱 Responsive layout (mobile–desktop)
 📂 Struktur Folder
-           ==============================================
-           ==============================================
-           ===                                        ===
-           ===       ├── app                          ===
-           ===       │   ├── api                      ===
-           ===       │   │   └── todos                ===
-           ===       │   │       └── route.ts         ===
-           ===       │   ├── components               ===
-           ===       │   │   └── TodoItem.tsx         ===
-           ===       │   └── page.tsx                 ===
-           ===       ├── prisma                       ===
-           ===       │   └── schema.prisma            ===
-           ===       ├── .env                         ===
-           ===       ├── package.json                 ===
-           ===       └── README.md                    ===
-           ===                                        ===
-           ==============================================
-           ==============================================
+.
+├── app
+│   ├── api
+│   │   └── todos
+│   │       └── route.ts
+│   ├── components
+│   │   └── TodoItem.tsx
+│   └── page.tsx
+├── prisma
+│   └── schema.prisma
+├── .env
+├── package.json
+└── README.md
 
 🧠 Arsitektur Singkat
 
