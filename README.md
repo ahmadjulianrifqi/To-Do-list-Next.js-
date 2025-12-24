@@ -39,16 +39,27 @@ Aplikasi To-Do List berbasis Next.js App Router yang memungkinkan pengguna menge
 📂 Struktur Folder
 .
 ├── app
+
 │   ├── api
+
 │   │   └── todos
+
 │   │       └── route.ts
+
 │   ├── components
+
 │   │   └── TodoItem.tsx
+
 │   └── page.tsx
+
 ├── prisma
+
 │   └── schema.prisma
+
 ├── .env
+
 ├── package.json
+
 └── README.md
 
 🧠 Arsitektur Singkat
