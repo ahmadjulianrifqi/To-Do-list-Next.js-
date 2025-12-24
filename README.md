@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+📝 To-Do List App (Next.js + Prisma)
 
-## Getting Started
+Aplikasi To-Do List berbasis Next.js App Router yang memungkinkan pengguna mengelola tugas secara real-time, persisten ke database PostgreSQL, dan siap production menggunakan Vercel + Neon.
 
-First, run the development server:
+ Project ini dibuat dengan fokus pada:
+- Struktur kode yang rapi (component-based)
+- UX yang nyaman
+- Integrasi backend modern (API Route + Prisma)
+- Siap untuk deployment production
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🚀 Tech Stack
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- Prisma ORM
+- PostgreSQL (Neon)
+- Vercel (Deployment)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+✨ Fitur Utama
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+✅ Tambah todo dengan judul & deadline
+✏️ Edit todo (judul & deadline) 
+❌ Hapus todo
+☑️ Tandai todo selesai / belum selesai
+🔍 Filter todo:
+      - All
+      - Active
+      - Completed
+🔃 Sorting todo:
+      - Terbaru
+      - Deadline terdekat
+⚡ Optimistic UI (checkbox langsung berubah tanpa reload)
+⏳ Loading state
+⚠️ Error handling
+📭 Empty state (saat todo kosong)
+🔔 Penanda deadline mendekati (warna merah)
+📱 Responsive layout (mobile–desktop)
+📂 Struktur Folder
+           ==============================================
+           ==============================================
+           ===                                        ===
+           ===       ├── app                          ===
+           ===       │   ├── api                      ===
+           ===       │   │   └── todos                ===
+           ===       │   │       └── route.ts         ===
+           ===       │   ├── components               ===
+           ===       │   │   └── TodoItem.tsx         ===
+           ===       │   └── page.tsx                 ===
+           ===       ├── prisma                       ===
+           ===       │   └── schema.prisma            ===
+           ===       ├── .env                         ===
+           ===       ├── package.json                 ===
+           ===       └── README.md                    ===
+           ===                                        ===
+           ==============================================
+           ==============================================
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🧠 Arsitektur Singkat
 
-## Learn More
+1. Frontend
+     Menggunakan App Router (app/page.tsx)
+    UI dipecah ke komponen TodoItem
+    State dikelola dengan React Hooks
+    Optimistic UI untuk interaksi checkbox
 
-To learn more about Next.js, take a look at the following resources:
+2. Backend
+     API menggunakan Next.js Route Handler
+    Database di-handle Prisma ORM
+    PostgreSQL sebagai storage utama
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+⚙️ Setup & Installation (Local)
+1️⃣ Clone repository
+    git clone https://github.com/ahmadjulianrifqi/To-Do-list-Next.js.git
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    cd todo-app
 
-## Deploy on Vercel
+2️⃣ Install dependencies
+    npm install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3️⃣ Setup environment variable
+Buat file .env:
+    DATABASE_URL="postgresql://username:password@host/dbname?sslmode=require"
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4️⃣ Sync database
+    npx prisma db push
+
+5️⃣ Jalankan development server
+    npm run dev
+
+Akses di:
+👉 http://localhost:3000
+
+🌍 Deployment
+
+Aplikasi ini siap dideploy ke Vercel dengan database PostgreSQL Neon.
+
+Langkah singkat:
+
+- Push ke GitHub
+- Import project ke Vercel
+- Set Environment Variable:
+   DATABASE_URL
+
+- Deploy 🚀
+
+📌 Catatan Penting
+
+Tidak menggunakan reload halaman
+State UI dan database tetap sinkron
+Kode sudah di-refactor agar mudah dikembangkan
+Cocok sebagai:
+    - Project portfolin
+    - Latihan fullstack Next.js
+    - Dasar aplikasi CRUD production-ready
+
+👨‍💻 Author
+    Ahmad Julian Rifqi
+    Mahasiswa & Web Developer
+    Fokus pada Fullstack JavaScript & Web Modern 🚀
