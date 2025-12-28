@@ -165,7 +165,7 @@ Cocok sebagai:
 
 👨‍💻 Author
 
-    Ahmad Julian Rifqi
+    Ahmad Julian Rifqi | Junior Fullstack Dev
 
     Mahasiswa & Web Developer
 
